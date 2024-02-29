@@ -1,11 +1,15 @@
+"""
+Module to scan the ports of a target and write the results to a file
+"""
+
 import socket
 
-
-def scan_ports(target, start_port, end_port, timeout, protocols):
+def scan_ports(target, start_port=1, end_port=65535, timeout=None, protocols="tcp"):
     """
     Scan the ports of a target using the specified protocols
     """
-    open_ports = []
+    open_ports = []  # Create a list to store the open ports
+
     for port in range(start_port, end_port + 1):
         for protocol in protocols:
             try:
@@ -29,7 +33,9 @@ def scan_ports(target, start_port, end_port, timeout, protocols):
                         f"Unsupported protocol: {protocol}"
                     )  # Raise an error for unsupported protocols
 
-                sock.settimeout(timeout)  # Set the socket timeout
+                if timeout:
+                    sock.settimeout(timeout)  # Set the socket timeout
+
                 result = sock.connect_ex(
                     (target, port)
                 )  # Connect to the target and port
@@ -49,7 +55,6 @@ def write_to_file(
     start_port,
     end_port,
     timeout,
-    num_threads,
     start_time,
     end_time,
 ):
@@ -61,10 +66,12 @@ def write_to_file(
         file.write(f"Protocol: {protocol}\n")
         file.write(f"Port Range: {start_port}-{end_port}\n")
         file.write(f"Timeout: {timeout}\n")
-        file.write(f"Number of Threads: {num_threads}\n")
         file.write(f"Start Time: {start_time}\n")
         file.write(f"End Time: {end_time}\n\n")
         for ip, port, protocol in data:
             file.write(f"IP: {ip} - Port {port} is open ({protocol.upper()})\n")
         file.write(f"\nScan completed in {end_time - start_time} seconds.\n")
         file.write("========================================\n\n")
+        
+        
+        
