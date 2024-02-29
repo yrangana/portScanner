@@ -16,7 +16,7 @@ lint:
 
 test:
 	@echo "Testing..."
-	pytest -v tests/*.py
+	pytest -v *.py
 	@echo "Tested"
 
 all: install format lint test
