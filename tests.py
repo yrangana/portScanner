@@ -26,7 +26,6 @@ def test_write_to_file():
     start_port = 80
     end_port = 80
     timeout = 1
-    num_threads = 1
     start_time = 0
     end_time = 1
 
