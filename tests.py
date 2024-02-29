@@ -4,16 +4,14 @@ This file contains the tests for the portScanner.py file.
 
 import os
 from src.port_scanner import scan_ports, write_to_file
+from src.Job import Job
+from src.ScanResults import ScanResults
 
 
 def test_scan_ports():
-    target = "localhost"
-    start_port = 80
-    end_port = 80
-    timeout = 1
-    protocols = ["tcp"]
+    job = Job("localhost", 80, 80, 1, "tcp")
 
-    result = scan_ports(target, start_port, end_port, timeout, protocols)
+    result = scan_ports(job=job)
     assert isinstance(result, list)
     if result:
         port, protocol = result[0]
@@ -22,25 +20,16 @@ def test_scan_ports():
 
 
 def test_write_to_file():
-    target = "localhost"
-    start_port = 80
-    end_port = 80
-    timeout = 1
-    start_time = 0
-    end_time = 1
 
-    data = [(target, start_port, "tcp")]
-    write_to_file(
-        data,
-        output_file,
-        target,
-        "tcp",
-        start_port,
-        end_port,
-        timeout,
-        start_time,
-        end_time,
+    scan_results = ScanResults(
+        data=[80],
+        output_file="test_output.txt",
+        job=Job("localhost", 80, 80, 1, "tcp"),
+        start_time=0,
+        end_time=1,
     )
+
+    write_to_file(scan_results=scan_results)
     assert os.path.exists(output_file)
     with open(output_file, "r", encoding="utf-8") as file:
         content = file.read()

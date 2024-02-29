@@ -1,0 +1,12 @@
+Port Scanner Results on localhost
+Protocol: tcp
+Port Range: 80-80
+Timeout: 1
+Start Time: 0
+End Time: 1
+
+Port 80 is open
+
+Scan completed in 1 seconds.
+========================================
+
