@@ -4,6 +4,7 @@ This is the main file for the port scanner. It is used to run the port scanner f
 
 import argparse
 import re
+import time
 from src.port_scanner import scan_ports, write_to_file
 from src.Job import Job
 from src.ScanResults import ScanResults
@@ -19,7 +20,7 @@ def main():
     run the port scanner from the command line
 
     usage: main.py -h or --help for help
-    main.py --target <target> --range <start_port> - <end_port> --timeout <timeout> --protocol <protocol> --output_file <output_file>
+    main.py --target <target> --range <start_port>-<end_port> --timeout <timeout> --protocol <protocol> --output_file <output_file>
 
     example:
     main.py --target localhost --range 1-1024 --timeout 1 --protocol tcp --output_file output.txt
@@ -63,7 +64,7 @@ def main():
         help="The path of the file to write the results to",
         required=False,
         metavar="file path",
-        default="output.txt",
+        default=None,
     )
 
     args = parser.parse_args()
@@ -79,6 +80,12 @@ def main():
     if start_port > end_port:
         raise ValueError("Start port must be less than or equal to end port")
 
+    if args.protocol not in protocols:
+        raise ValueError(f"Protocol must be one of: {', '.join(protocols)}")
+
+    if args.output_file is None:
+        args.output_file = f"port_scan_results_{args.target}.txt"
+
     args.start_port = int(start_port)
     args.end_port = int(end_port)
     args.timeout = int(args.timeout)
@@ -92,14 +99,16 @@ def main():
         args.protocols,
     )
 
-    open_ports = scan_ports(job=job)
+    start_time = time.time()
+    open_ports = scan_ports(job=job, threads=10)
+    end_time = time.time()
 
     scan_results = ScanResults(
         data=open_ports,
         output_file=args.output_file,
         job=job,
-        start_time=0,
-        end_time=1,
+        start_time=start_time,
+        end_time=end_time,
     )
 
     write_to_file(scan_results=scan_results)

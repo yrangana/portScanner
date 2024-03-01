@@ -3,49 +3,60 @@ Module to scan the ports of a target and write the results to a file
 """
 
 import socket
+from tqdm import tqdm
 from src.Job import Job
 from src.ScanResults import ScanResults
+from concurrent.futures import ThreadPoolExecutor
+
+open_ports = []  # Create a list to store the open ports
 
 
-def scan_ports(job: Job):
+def scan_port(target, port, protocol, timeout):
     """
-    Scan the ports of a target using the specified protocols
+    Scan a single port of a target
     """
-    open_ports = []  # Create a list to store the open ports
+    try:
+        if protocol == "tcp":
+            sock = socket.socket(
+                socket.AF_INET, socket.SOCK_STREAM
+            )  # Create a TCP socket
+        elif protocol == "udp":
+            sock = socket.socket(
+                socket.AF_INET, socket.SOCK_DGRAM
+            )  # Create a UDP socket
+        elif protocol == "http":
+            sock = socket.socket(
+                socket.AF_INET, socket.SOCK_STREAM
+            )  # Create a TCP socket for HTTP
+            sock.sendall(
+                b"GET / HTTP/1.1\r\nHost: " + target.encode() + b"\r\n\r\n"
+            )  # Send an HTTP GET request
+        else:
+            raise ValueError(
+                f"Unsupported protocol: {protocol}"
+            )  # Raise an error for unsupported protocols
 
-    for port in range(job.start_port, job.end_port + 1):
-        try:
-            if job.protocol == "tcp":
-                sock = socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM
-                )  # Create a TCP socket
-            elif job.protocol == "udp":
-                sock = socket.socket(
-                    socket.AF_INET, socket.SOCK_DGRAM
-                )  # Create a UDP socket
-            elif job.protocol == "http":
-                sock = socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM
-                )  # Create a TCP socket for HTTP
-                sock.sendall(
-                    b"GET / HTTP/1.1\r\nHost: " + job.target.encode() + b"\r\n\r\n"
-                )  # Send an HTTP GET request
-            else:
-                raise ValueError(
-                    f"Unsupported protocol: {job.protocol}"
-                )  # Raise an error for unsupported protocols
+        if timeout:
+            sock.settimeout(timeout)  # Set the socket timeout
 
-            if job.timeout:
-                sock.settimeout(job.timeout)  # Set the socket timeout
+        result = sock.connect_ex((target, port))  # Connect to the target and port
+        if result == 0:
+            open_ports.append(port)  # Add the open port to the list
+        sock.close()  # Close the socket
+    except socket.error as e:
+        raise ValueError from e
 
-            result = sock.connect_ex(
-                (job.target, port)
-            )  # Connect to the target and port
-            if result == 0:
-                open_ports.append(port)  # Add the open port to the list
-            sock.close()  # Close the socket
-        except socket.error as e:
-            raise ValueError from e
+
+def scan_ports(job: Job, threads: int = 10):
+    """
+    Scan the ports of a target using multiple threads and add tqdm progress bar
+    """
+    with tqdm(total=job.end_port - job.start_port + 1) as pbar:
+        with ThreadPoolExecutor(max_workers=threads) as executor:
+            futures = [executor.submit(scan_port, job.target, port, job.protocol, job.timeout) for port in range(job.start_port, job.end_port + 1)]
+            for future in futures:
+                future.result()
+                pbar.update(1)
     return open_ports
 
 
