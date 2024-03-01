@@ -20,10 +20,10 @@ def main():
     run the port scanner from the command line
 
     usage: main.py -h or --help for help
-    main.py --target <target> --range <start_port>-<end_port> --timeout <timeout> --protocol <protocol> --output_file <output_file>
+    main.py --target <target> --range <start_port>-<end_port> --timeout <timeout> --protocol <protocol> --output_file <output_file> --verbose <verbose>
 
     example:
-    main.py --target localhost --range 1-1024 --timeout 1 --protocol tcp --output_file output.txt
+    main.py --target localhost --range 1-1024 --timeout 1 --protocol tcp --output_file output.txt --verbose True
 
     """
     parser = argparse.ArgumentParser(description="Port Scanner")
@@ -66,6 +66,14 @@ def main():
         metavar="file path",
         default=None,
     )
+    
+    parser.add_argument(
+        "--verbose",
+        help="Print the results to the console",
+        required=False,
+        metavar="verbose",
+        default=False,
+    )
 
     args = parser.parse_args()
 
@@ -90,6 +98,7 @@ def main():
     args.end_port = int(end_port)
     args.timeout = int(args.timeout)
     args.protocols = args.protocol
+    args.verbose = bool(args.verbose)
 
     job = Job(
         args.target,
@@ -97,11 +106,16 @@ def main():
         args.end_port,
         args.timeout,
         args.protocols,
+        args.verbose,
     )
 
     start_time = time.time()
     open_ports = scan_ports(job=job, threads=10)
     end_time = time.time()
+    
+    if job.verbose:
+        print(f"Scan complete in {end_time - start_time} seconds")
+        print(f"Open ports: {open_ports}")
 
     scan_results = ScanResults(
         data=open_ports,

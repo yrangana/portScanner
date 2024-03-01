@@ -1,11 +1,12 @@
 class Job:
-    def __init__(self, target, start_port, end_port, timeout, protocol):
+    def __init__(self, target, start_port, end_port, timeout, protocol, verbose=False):
         self.target = target
         self.start_port = start_port
         self.end_port = end_port
         self.timeout = timeout
         self.protocol = protocol
         self.results = None
+        self.verbose = verbose
 
     @property
     def target(self):
@@ -66,3 +67,13 @@ class Job:
         if value is not None and not isinstance(value, list):
             raise ValueError("Results must be a list")
         self._results = value
+        
+    @property
+    def verbose(self):
+        return self._verbose
+    
+    @verbose.setter
+    def verbose(self, value):
+        if not isinstance(value, bool):
+            raise ValueError("Verbose must be a boolean")
+        self._verbose = value
