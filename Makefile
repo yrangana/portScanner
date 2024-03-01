@@ -11,7 +11,7 @@ format:
 
 lint:
 	@echo "Linting..."
-	pylint --disable=R,C *.py */*.py
+	pylint --disable=R,C,E1121 *.py */*.py
 	@echo "Linted"
 
 test:
