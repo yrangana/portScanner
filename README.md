@@ -1,3 +1,5 @@
+[![Application test with Github Actions](https://github.com/yrangana/portScanner/actions/workflows/main.yml/badge.svg)](https://github.com/yrangana/portScanner/actions/workflows/main.yml)
+
 # Port Scanner
 
 This is a simple port scanner written in Python. It is a command line tool that can be used to scan for open ports on a given IP address.
