@@ -68,7 +68,7 @@ def main():
         metavar="file path",
         default=None,
     )
-    
+
     parser.add_argument(
         "--verbose",
         help="Print the results to the console",
@@ -76,7 +76,7 @@ def main():
         metavar="verbose",
         default=verbose,
     )
-    
+
     parser.add_argument(
         "--threads",
         help="The number of threads to use for the scan",
@@ -132,7 +132,7 @@ def main():
     start_time = time.time()
     open_ports = scan_ports(job=job)
     end_time = time.time()
-    
+
     if job.verbose:
         print(f"Scan complete in {end_time - start_time} seconds")
         print(f"Open ports: {open_ports}")

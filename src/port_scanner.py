@@ -52,7 +52,7 @@ def scan_ports(job: Job):
     Scan the ports of a target using multiple threads with progress bar
     """
     if job.verbose:
-        print(f"Scanning {job.target}...")    
+        print(f"Scanning {job.target}...")
     with tqdm(total=job.end_port - job.start_port + 1) as pbar:
         with ThreadPoolExecutor(max_workers=job.threads) as executor:
             futures = [

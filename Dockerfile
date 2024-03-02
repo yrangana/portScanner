@@ -10,5 +10,8 @@ RUN apt-get update && apt-get install -y make \
 
 RUN make install
 
-ENTRYPOINT ["/bin/bash", "-l" , "-c"]
-CMD ["python main.py --help"]
+ENTRYPOINT [ "python" ]
+CMD [ "main.py", "--help" ]
+
+#ENTRYPOINT ["/bin/bash", "-l" , "-c"]
+#CMD ["python main.py --help"]
