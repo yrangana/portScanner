@@ -13,6 +13,8 @@ protocols = ["tcp", "udp", "http"]
 min_port = 1
 max_port = 65535
 default_timeout = 1
+verbose = False
+threads = 10
 
 
 def main():
@@ -72,7 +74,16 @@ def main():
         help="Print the results to the console",
         required=False,
         metavar="verbose",
-        default=False,
+        default=verbose,
+    )
+    
+    parser.add_argument(
+        "--threads",
+        help="The number of threads to use for the scan",
+        required=False,
+        metavar="threads",
+        type=int,
+        default=threads,
     )
 
     args = parser.parse_args()
@@ -98,19 +109,28 @@ def main():
     args.end_port = int(end_port)
     args.timeout = int(args.timeout)
     args.protocols = args.protocol
-    args.verbose = bool(args.verbose)
+    if args.verbose.lower() not in ["true", "false"]:
+        raise ValueError("Verbose must be a boolean value (True or False)")
+    if args.verbose.lower() == "true":
+        args.verbose = True
+    else:
+        args.verbose = False
+    if args.threads < 1:
+        raise ValueError("Threads must be a positive integer")
+    args.threads = int(args.threads)
 
     job = Job(
         args.target,
         args.start_port,
         args.end_port,
+        args.threads,
         args.timeout,
         args.protocols,
         args.verbose,
     )
 
     start_time = time.time()
-    open_ports = scan_ports(job=job, threads=10)
+    open_ports = scan_ports(job=job)
     end_time = time.time()
     
     if job.verbose:

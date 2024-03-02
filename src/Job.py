@@ -1,8 +1,9 @@
 class Job:
-    def __init__(self, target, start_port, end_port, timeout, protocol, verbose=False):
+    def __init__(self, target, start_port, end_port, threads, timeout, protocol, verbose=False):
         self.target = target
         self.start_port = start_port
         self.end_port = end_port
+        self.threads = threads
         self.timeout = timeout
         self.protocol = protocol
         self.results = None
@@ -77,3 +78,13 @@ class Job:
         if not isinstance(value, bool):
             raise ValueError("Verbose must be a boolean")
         self._verbose = value
+        
+    @property
+    def threads(self):
+        return self._threads
+    
+    @threads.setter
+    def threads(self, value):
+        if not isinstance(value, int):
+            raise ValueError("Threads must be an integer")
+        self._threads = value

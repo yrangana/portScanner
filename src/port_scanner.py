@@ -47,14 +47,14 @@ def scan_port(target, port, protocol, timeout):
         raise ValueError from e
 
 
-def scan_ports(job: Job, threads: int = 1):
+def scan_ports(job: Job):
     """
     Scan the ports of a target using multiple threads with progress bar
     """
     if job.verbose:
         print(f"Scanning {job.target}...")    
     with tqdm(total=job.end_port - job.start_port + 1) as pbar:
-        with ThreadPoolExecutor(max_workers=threads) as executor:
+        with ThreadPoolExecutor(max_workers=job.threads) as executor:
             futures = [
                 executor.submit(scan_port, job.target, port, job.protocol, job.timeout)
                 for port in range(job.start_port, job.end_port + 1)
