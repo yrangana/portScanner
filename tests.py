@@ -9,7 +9,7 @@ from src.ScanResults import ScanResults
 
 
 def test_scan_ports():
-    job = Job("localhost", 80, 80,10, 1, "tcp", verbose=True)
+    job = Job("localhost", 80, 80, 10, 1, "tcp", True)
 
     result = scan_ports(job=job)
     assert isinstance(result, list)
@@ -24,7 +24,7 @@ def test_write_to_file():
     scan_results = ScanResults(
         data=[80],
         output_file="test_output.txt",
-        job = Job("localhost", 80, 80,10, 1, "tcp", verbose=True)
+        job=Job("localhost", 80, 80, 10, 1, "tcp", True),
         start_time=0,
         end_time=1,
     )
