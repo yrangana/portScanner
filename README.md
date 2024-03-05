@@ -1,5 +1,3 @@
-[![Application test with Github Actions](https://github.com/yrangana/portScanner/actions/workflows/main.yml/badge.svg)](https://github.com/yrangana/portScanner/actions/workflows/main.yml)
-
 # Port Scanner
 
 This is a simple port scanner written in Python. It is a command line tool that can be used to scan for open ports on a given IP address.
@@ -25,7 +23,7 @@ make install
 To use the port scanner, run the following command:
 
 ```bash
-python main.py --target=<target> --range=<start_port>-<end_port> --timeout=<timeout> --protocol=<protocol> --output_file=<output_file> --verbose=<verbose>
+python main.py --target=<target> --range=<start_port>-<end_port> --threads=<number_of_threads> --timeout=<timeout> --protocol=<protocol> --output_file=<output_file> --verbose=<verbose>
 ```
 
 ## Help
@@ -43,6 +41,7 @@ The following options are available:
 - `--target` : The target IP address or hostname to scan
 - `--range` : The range of ports to scan (e.g. 1-1024)
 - `--timeout` : The timeout for the scan in seconds
+- `--threads` : The number of threads to use for the scan
 - `--protocol` : The protocol to use for the scan (e.g. tcp, udp, http)
 - `--output_file` : The file to write the results to (e.g. results.txt)
 - `--verbose` : Whether to print verbose output (e.g. True, False)
@@ -52,7 +51,7 @@ The following options are available:
 To scan the first 1024 ports on the IP address `localhost` using the TCP protocol and a timeout of 1 second, run the following command:
 
 ```bash
-python main.py --target=localhost --range=1-1024 --timeout=1 --protocol=tcp --output_file=results.txt --verbose=True
+python main.py --target=localhost --range=1-1024 --threads=10 --timeout=1 --protocol=tcp --output_file=results.txt --verbose=True
 ```
 
 ## For Developers
