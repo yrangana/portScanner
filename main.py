@@ -45,6 +45,15 @@ def main():
     )
 
     parser.add_argument(
+        "--threads",
+        help="The number of threads to use for the scan",
+        required=False,
+        metavar="threads",
+        type=int,
+        default=threads,
+    )
+
+    parser.add_argument(
         "--timeout",
         help="The timeout for the scan in seconds",
         required=False,
@@ -77,22 +86,13 @@ def main():
         default=verbose,
     )
 
-    parser.add_argument(
-        "--threads",
-        help="The number of threads to use for the scan",
-        required=False,
-        metavar="threads",
-        type=int,
-        default=threads,
-    )
-
     args = parser.parse_args()
 
     if not re.match(r"\d+-\d+", args.range):
         raise ValueError("Invalid port range")
 
     start_port, end_port = args.range.split("-")
-    
+
     if not start_port.isdigit() or not end_port.isdigit():
         raise ValueError("Invalid port range")
 
@@ -100,7 +100,9 @@ def main():
         raise ValueError(f"Port range must be between {min_port} and {max_port}")
 
     if int(start_port) > int(end_port):
-        raise ValueError(f"Start port - {start_port}, must be less than or equal to end port - {end_port}")
+        raise ValueError(
+            f"Start port - {start_port}, must be less than or equal to end port - {end_port}"
+        )
 
     if args.protocol not in protocols:
         raise ValueError(f"Protocol must be one of: {', '.join(protocols)}")
