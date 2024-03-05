@@ -1,13 +1,17 @@
 # Port Scanner
 
-This is a simple port scanner written in Python. It is a command line tool that can be used to scan for open ports on a given IP address.
+This is a simple port scanner written in Python. It is a command line tool that can be used to scan for open ports on a given IP address or a hostname. The tool supports scanning for TCP, UDP, and HTTP ports. It also supports multithreading to speed up the scanning process. The results of the scan can be written to a file and verbose output can be enabled to see the progress of the scan.
 
 ## Installation
 
 To install the port scanner,
 
-1. Clone the repository:
-2. Highly recommended to create a virtual environment and activate it
+1. Copy the repository to your local machine and navigate to the directory containing the `main.py` file.
+```bash
+cd portScanner
+```
+
+2. Highly recommended to create a virtual environment and activate it using the following commands:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate

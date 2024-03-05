@@ -22,10 +22,10 @@ def main():
     run the port scanner from the command line
 
     usage: main.py -h or --help for help
-    main.py --target <target> --range <start_port>-<end_port> --timeout <timeout> --protocol <protocol> --output_file <output_file> --verbose <verbose>
+    python main.py --target <target> --range <start_port>-<end_port> --timeout <timeout> --threads <threads> --protocol <protocol> --output_file <output_file> --verbose <verbose>
 
     example:
-    main.py --target localhost --range 1-1024 --timeout 1 --protocol tcp --output_file output.txt --verbose True
+    python main.py --target localhost --range 1-1024 --timeout 1 --threads 10 --protocol tcp --output_file output.txt --verbose True
 
     """
     parser = argparse.ArgumentParser(description="Port Scanner")
@@ -92,12 +92,15 @@ def main():
         raise ValueError("Invalid port range")
 
     start_port, end_port = args.range.split("-")
+    
+    if not start_port.isdigit() or not end_port.isdigit():
+        raise ValueError("Invalid port range")
 
     if int(start_port) < min_port or int(end_port) > max_port:
         raise ValueError(f"Port range must be between {min_port} and {max_port}")
 
-    if start_port > end_port:
-        raise ValueError("Start port must be less than or equal to end port")
+    if int(start_port) > int(end_port):
+        raise ValueError(f"Start port - {start_port}, must be less than or equal to end port - {end_port}")
 
     if args.protocol not in protocols:
         raise ValueError(f"Protocol must be one of: {', '.join(protocols)}")
