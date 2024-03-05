@@ -85,6 +85,12 @@ docker build -t port-scanner .
 To run the docker image, run the following command:
 
 ```bash
+docker run port_scanner main.py --target <target> --range <start_port>-<end_port> --threads <number_of_threads> --timeout <timeout> --protocol <protocol> --output_file <output_file> --verbose <verbose>
+```
+
+For example:
+
+```bash
 docker run port_scanner main.py --target 100.115.210.81 --threads 10 --range 1-100 --verbose true
 ```
 make sure to add `--verbose=True` to see the output
